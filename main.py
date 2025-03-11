@@ -31,4 +31,4 @@ def main():
     router.frame().classes('w-full p-4 bg-gray-100')
 
 
-ui.run()
+ui.run(port=8081)
