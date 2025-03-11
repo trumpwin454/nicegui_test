@@ -1,22 +1,19 @@
 from fastapi import FastAPI
-from nicegui import ui
 
-app = FastAPI()
+from nicegui import app, ui
 
-# FastAPI route
-@app.get("/")
-def home():
-    return {"message": "Welcome to FastAPI with NiceGUI!"}
 
-# Initialize NiceGUI app
-def nicegui_app():
-    with ui.row():
-        ui.label('Hello, this is a NiceGUI interface with FastAPI!')
-        ui.button('Click Me', on_click=lambda: ui.label('You clicked the button!'))
+def init(fastapi_app: FastAPI) -> None:
+    @ui.page('/')
+    def show():
+        ui.label('Hello, FastAPI!')
 
-# Mount NiceGUI to FastAPI
-ui.init()
-app.mount("/ui", ui.app)
+        # NOTE dark mode will be persistent for each user across tabs and server restarts
+        ui.dark_mode().bind_value(app.storage.user, 'dark_mode')
+        ui.checkbox('dark mode').bind_value(app.storage.user, 'dark_mode')
 
-# Run the NiceGUI app in the background
-ui.run(nicegui_app)
+    ui.run_with(
+        fastapi_app,
+        mount_path='/gui',  # NOTE this can be omitted if you want the paths passed to @ui.page to be at the root
+        storage_secret='pick your private secret here',  # NOTE setting a secret is optional but allows for persistent storage per user
+    )
