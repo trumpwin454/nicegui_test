@@ -1,0 +1,5 @@
+# Ignore all .log files
+*.pyc
+
+# Ignore all files in any directory named temp
+__pycache__/
